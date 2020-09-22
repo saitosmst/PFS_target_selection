@@ -1,1 +1,1 @@
-# Codes for PFS Cosmology
+# Codes for ELG target selection for PFS Cosmology
