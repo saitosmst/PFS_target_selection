@@ -6,7 +6,7 @@ Download the catalog from [this link](https://www.dropbox.com/s/i4vgpyet9nd9ryx/
 
 Each source python code is independently developed. Currently in the repository you may find
 
-- **stat_summary.py**
+- **summary_stat.py**
 
 - **fisherlda.py**
 
