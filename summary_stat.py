@@ -4,7 +4,7 @@
 r"""
     author: SHUN SAITO (Missouri S&T)
 
-    Time-stamp: <Wed Sep 23 10:18:14 CDT 2020>
+    Time-stamp: <Wed Sep 23 10:45:20 CDT 2020>
 
     This code is developed for the target-selection purpose 
     in the PFS cosmology working group.
@@ -90,20 +90,17 @@ def calc_target_stats(cat_input, selection, snr_threshold=6, snr_label='SNR_PFS_
 
 
 
-def calc_dndz(arr_tmp, fac_eff, verbose=0):
+def calc_dndz(arr_tmp, fac_eff, zbins, verbose=0):
     """
     Compute redshift distribution of the input catalog ('arr_tmp') following the binning in Takada+(2014)
     """
 
-    dndzs = np.zeros(shape=(7,4))
+    numz = zbins.shape[0]-1
+    dndzs = np.zeros(shape=(numz,4))
     
-    for iz in range(7):
-        if iz<=4:
-            zmin = 0.6 + iz*0.2
-            zmax = 0.8 + iz*0.2
-        else:
-            zmin = 1.6 + (iz-5)*0.4
-            zmax = 2.0 + (iz-5)*0.4
+    for iz in range(numz):
+        zmin = zbins[iz]
+        zmax = zbins[iz+1]
     
         Vs = integrate.quad(dVc_dzdOmega, zmin, zmax)[0]*AREA_PFS*(u.deg**2).to(u.sr)/1.e9 #[(Gpc/h)^3]
         select = (arr_tmp['z_photo']>=zmin) & (arr_tmp['z_photo']<zmax)
@@ -136,4 +133,6 @@ if __name__ == "__main__":
     cut_target  = select_g_gr & ~select_ri
     
     numELGs, pfs_mT14_sn6, fac_eff = calc_target_stats(arr_cmc, cut_target, snr_threshold=6, verbose=1)
-    calc_dndz(pfs_mT14_sn6, fac_eff, verbose=1)
+
+    zbins_T14 = np.array([0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 2.0, 2.4])
+    calc_dndz(pfs_mT14_sn6, fac_eff, zbins_T14, verbose=1)
