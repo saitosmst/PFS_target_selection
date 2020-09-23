@@ -4,13 +4,16 @@
 r"""
     author: SHUN SAITO (Missouri S&T)
 
-    Time-stamp: <Tue Sep 22 16:16:57 CDT 2020>
+    Time-stamp: <Wed Sep 23 10:18:14 CDT 2020>
 
     This code is developed for the target-selection purpose 
     in the PFS cosmology working group.
 
 
-    The code is highly relying on the EL-COSMOS catalog 
+    This file provides useful functions to output summary statistics 
+    for the PFS target selection.
+
+    Note that the code is highly relying on the EL-COSMOS catalog 
     (Saito et al. 2020) which predicts the [OII] fluxes
     as well as broadband photometries from HSC, (g, r, i, y, z).
 
@@ -45,7 +48,8 @@ dVc_dzdOmega = lambda x: cp.differential_comoving_volume(x).to(Mpcph**3/u.sr).va
 
 
 
-def calc_target_stats(cat_input, selection, snr_threshold=6, snr_label='SNR_PFS_OII', verbose=0):
+def calc_target_stats(cat_input, selection, snr_threshold=6, snr_label='SNR_PFS_OII',
+                      zlow=0.6, zhigh=2.4, verbose=0):
     """
     This is the main function to compute the summary statistics for the target selection. 
     """
@@ -59,15 +63,15 @@ def calc_target_stats(cat_input, selection, snr_threshold=6, snr_label='SNR_PFS_
     num_fiber_missed = 2*NUM_FIBER - num_fiber_assigned
     
     ######
-    select_det = cat_tgt['SNR_PFS_OII'] > snr_threshold
-    select_zred = (cat_tgt['z_photo'] > 0.6) & (cat_tgt['z_photo'] < 2.4)
+    select_det = cat_tgt[snr_label] > snr_threshold
+    select_zred = (cat_tgt['z_photo'] > zlow) & (cat_tgt['z_photo'] < zhigh)
     cat_pfs = cat_tgt[select_det & select_zred]
     f_success = np.float(cat_pfs.shape[0])/np.float(cat_tgt.shape[0])
     num_elg  = int(f_success*num_fiber_assigned)
 
     if verbose >= 1:
         print('***** Target selection statistics summary *****\n')
-        print('Your S/N_[OII] threthold: {0}\n'.format(snr_threshold))
+        print('Your threthold: {0} > {1}\n'.format(snr_label,snr_threshold))
         print('(1) # of fibers for which a galaxy is assigned: {0}'.format(num_fiber_assigned))
         print('# of fibers which miss a galaxy assignment: {0}'.format(num_fiber_missed))
         print('efficiency = (1)/(# of total fibers, {0}): {1:5.2f}%\n'.format(2*NUM_FIBER, 100.*(1. - poisson.pmf(0., mu) + 1.

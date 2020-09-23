@@ -4,15 +4,13 @@
 r"""
     author: SHUN SAITO (Missouri S&T)
 
-    Time-stamp: <Fri Sep 18 09:32:48 CDT 2020>
+    Time-stamp: <Wed Sep 23 09:48:51 CDT 2020>
 
     This code is developed for the target-selection purpose 
     in the PFS cosmology working group.
 
-
-    The code is highly relying on the EL-COSMOS catalog 
-    (Saito et al. 2020) which predicts the [OII] fluxes
-    as well as broadband photometries from HSC, (g, r, i, y, z).
+    This code provides a simple, general class to compute 
+    the Fisher LDA. 
 
     Version history:
         0.0    initial migration from jupyter notebooks
@@ -23,29 +21,11 @@ __version__ = '0.0'
 
 
 import numpy as np
-from astropy import units as u
-from astropy.cosmology import FlatLambdaCDM
-from astropy.constants import c
-from astropy.io import fits
-from scipy import integrate, interpolate
-from scipy.stats import poisson
-
-# hard-coded constants and setting
-## PFS
-AREA_PFSFoV = 1.098 # Area of the Field of View in one visit [deg^2]
-AREA_PFS = 1464     # Area of the total PFS cosmology footprint [deg^2]
-NUM_FIBER = 2394    # Number of fibers available in one visit
-## EL-COSMOS
-AREA_CMC = 1.38     # Area of the COSMOS-2015 catalog [deg^2]
-## Fiducial cosmology from astropy
-cp = FlatLambdaCDM(H0=67.77, Om0=0.307115)
-littleh = cp.H0.value/100
-Mpcph = u.def_unit('Mpcph', u.Mpc/littleh) #[Mpc/h]
-dVc_dzdOmega = lambda x: cp.differential_comoving_volume(x).to(Mpcph**3/u.sr).value #[(Mpc/h)^3/sr]
-
 
 class FisherLDA(object):
     r"""
+    [Sorry, under construction!]
+
     A simple class to compute the Fisher Linear Discriminant Analysis.
 
     Input
